@@ -144,8 +144,7 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   struct sysinfo memInfo;
   unsigned long total_virtual_memory, total_physical_memory,
       total_used_virtual_memory, total_used_physical_memory;
-  int process_virtual_memory = 0;
-  int process_physical_memory = 0;
+  int process_virtual_memory, process_physical_memory;
   FILE *file;
   char buffer[1024] = "";
 
@@ -169,13 +168,15 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   if (file) {
     while (fscanf(file, " %1023s", buffer) == 1) {
       if (strcmp(buffer, "VmSize:") == 0) {
-        fscanf(file, " %d", &process_virtual_memory);
+        if (fscanf(file, " %d", &process_virtual_memory) != 1)
+          process_virtual_memory = 0;
         process_virtual_memory *= 1024;
         break;
       }
 
       if (strcmp(buffer, "VmRSS:") == 0) {
-        fscanf(file, " %d", &process_physical_memory);
+        if (fscanf(file, " %d", &process_physical_memory) != 1)
+          process_physical_memory = 0;
         process_physical_memory *= 1024;
         break;
       }

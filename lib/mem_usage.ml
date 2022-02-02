@@ -53,17 +53,20 @@ let prettify_bytes ?(float_printer = Printf.sprintf "%.02f") ?(signed = false)
     if bytes < 0 then ("-", -bytes) else ((if signed then "+" else ""), bytes)
   in
 
-  let exponent =
-    Float.floor
-      (if binary then log (float bytes) /. log 1024.
-      else log10 (float bytes) /. 3.)
-  in
-  let unit_index =
-    if List.length units - 1 < int_of_float exponent then List.length units - 1
-    else int_of_float exponent
-  in
-  let bytes =
-    float bytes /. Float.pow (if binary then 1024. else 1000.) exponent
-  in
-  Printf.sprintf "%s%s %s" prefix (float_printer bytes)
-    (List.nth units unit_index)
+  if bytes = 0 then Printf.sprintf "%s0 %s" prefix (List.hd units)
+  else (
+    let exponent =
+      Float.floor
+        (if binary then log (float bytes) /. log 1024.
+        else log10 (float bytes) /. 3.)
+    in
+    let unit_index =
+      if List.length units - 1 < int_of_float exponent then
+        List.length units - 1
+      else int_of_float exponent
+    in
+    let bytes =
+      float bytes /. Float.pow (if binary then 1024. else 1000.) exponent
+    in
+    Printf.sprintf "%s%s %s" prefix (float_printer bytes)
+      (List.nth units unit_index))
