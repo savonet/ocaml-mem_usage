@@ -51,6 +51,7 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
 #include <mach/mach_init.h>
 #include <mach/mach_types.h>
 #include <mach/vm_statistics.h>
+#include <stdio.h>
 #include <sys/mount.h>
 #include <sys/sysctl.h>
 
@@ -72,46 +73,52 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
 
   caml_release_runtime_system();
   if (statfs("/", &stats) != 0) {
-    caml_acquire_runtime_system();
-    caml_failwith("Error while getting free swap space.");
+    fprintf(stderr, "Error while getting free swap space.\n");
+    total_virtual_memory = 0;
+  } else {
+    total_virtual_memory = (uint64_t)stats.f_bsize * stats.f_bfree;
   }
-  total_virtual_memory = (uint64_t)stats.f_bsize * stats.f_bfree;
 
   if (sysctlbyname("vm.swapusage", &vmem_usage, &size, NULL, 0) != 0) {
-    caml_acquire_runtime_system();
-    caml_failwith("Error while getting swap usage");
+    fprintf(stderr, "Error while getting swap usage.\n");
+    total_used_virtual_memory = 0;
+  } else {
+    total_used_virtual_memory = vmem_usage.xsu_used;
   }
-  total_used_virtual_memory = vmem_usage.xsu_used;
 
   if (task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&t_info,
                 &t_info_count)) {
-    caml_acquire_runtime_system();
-    caml_failwith("Unable to get virtual memory currently used by the process");
+    fprintf(stderr,
+            "Unable to get virtual memory currently used by the process.\n");
+    process_physical_memory = 0;
+    process_virtual_memory = 0;
+  } else {
+    process_physical_memory = t_info.resident_size;
+    process_virtual_memory = t_info.virtual_size;
   }
-  process_physical_memory = t_info.resident_size;
-  process_virtual_memory = t_info.virtual_size;
 
   mach_port = mach_host_self();
   count = sizeof(vm_stats) / sizeof(natural_t);
 
   if (host_page_size(mach_port, &page_size) != KERN_SUCCESS) {
-    caml_acquire_runtime_system();
-    caml_failwith("Unable to get host page size");
+    fprintf(stderr, "Unable to get host page size.\n");
+    total_physical_memory = 0;
+    total_used_physical_memory = 0;
+  } else {
+    if (host_statistics64(mach_port, HOST_VM_INFO, (host_info64_t)&vm_stats,
+                          &count) != KERN_SUCCESS) {
+      fprintf(stderr, "Unable to get host stats.\n");
+      total_physical_memory = 0;
+      total_used_physical_memory = 0;
+    } else {
+      total_physical_memory = vm_stats.free_count * (int64_t)page_size;
+
+      total_used_physical_memory =
+          ((int64_t)vm_stats.active_count + (int64_t)vm_stats.inactive_count +
+           (int64_t)vm_stats.wire_count) *
+          (int64_t)page_size;
+    }
   }
-
-  if (host_statistics64(mach_port, HOST_VM_INFO, (host_info64_t)&vm_stats,
-                        &count) != KERN_SUCCESS) {
-
-    caml_acquire_runtime_system();
-    caml_failwith("Unable to get host stats");
-  }
-
-  total_physical_memory = vm_stats.free_count * (int64_t)page_size;
-
-  total_used_physical_memory =
-      ((int64_t)vm_stats.active_count + (int64_t)vm_stats.inactive_count +
-       (int64_t)vm_stats.wire_count) *
-      (int64_t)page_size;
 
   caml_acquire_runtime_system();
 
@@ -131,25 +138,16 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
 #include <sys/sysinfo.h>
 #include <sys/types.h>
 
-static inline int parseLine(char *line) {
-  int i = strlen(line);
-  const char *p = line;
-  while (*p < '0' || *p > '9')
-    p++;
-  line[i - 3] = '\0';
-  i = atoi(p);
-  return i;
-}
-
 CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   CAMLparam0();
   CAMLlocal1(ret);
   struct sysinfo memInfo;
   unsigned long total_virtual_memory, total_physical_memory,
       total_used_virtual_memory, total_used_physical_memory;
-  int process_virtual_memory, process_physical_memory;
+  int process_virtual_memory = 0;
+  int process_physical_memory = 0;
   FILE *file;
-  char line[128];
+  char buffer[1024] = "";
 
   caml_release_runtime_system();
   sysinfo(&memInfo);
@@ -168,19 +166,22 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   total_used_physical_memory *= memInfo.mem_unit;
 
   file = fopen("/proc/self/status", "r");
-  while (fgets(line, 128, file) != NULL) {
-    if (strncmp(line, "VmSize:", 7) == 0) {
-      process_virtual_memory = parseLine(line);
-      break;
-    }
+  if (file) {
+    while (fscanf(file, " %1023s", buffer) == 1) {
+      if (strcmp(buffer, "VmSize:") == 0) {
+        fscanf(file, " %d", &process_virtual_memory);
+        process_virtual_memory *= 1024;
+        break;
+      }
 
-    if (strncmp(line, "VmRSS:", 6) == 0) {
-      process_physical_memory = parseLine(line);
-      break;
+      if (strcmp(buffer, "VmRSS:") == 0) {
+        fscanf(file, " %d", &process_physical_memory);
+        process_physical_memory *= 1024;
+        break;
+      }
     }
+    fclose(file);
   }
-
-  fclose(file);
 
   ret = caml_alloc_tuple(6);
   Store_field(ret, 0, Val_int(total_virtual_memory));
