@@ -10,6 +10,6 @@
 
 (package
  (name mem_usage)
- (synopsis "Cross-platform stats about memory and CPU usage")
+ (synopsis "Cross-platform stats about memory usage")
  (depends dune)
 )
