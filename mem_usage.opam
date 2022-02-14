@@ -7,9 +7,12 @@ authors: ["Romain Beauxis <toots@rastageeks.org>"]
 license: "GPL-2.0"
 homepage: "https://github.com/savonet/ocaml-mem_usage"
 bug-reports: "https://github.com/savonet/ocaml-mem_usage/issues"
-depends: ["dune"]
+depends: [
+  "dune" {>= "2.8"}
+  "odoc" {with-doc}
+]
 build: [
-  ["dune" "subst"] {pinned}
+  ["dune" "subst"] {dev}
   [
     "dune"
     "build"
