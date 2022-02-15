@@ -8,9 +8,11 @@ license: "GPL-2.0"
 homepage: "https://github.com/savonet/ocaml-mem_usage"
 bug-reports: "https://github.com/savonet/ocaml-mem_usage/issues"
 depends: [
+  "ocaml" {>= "4.08"}
   "dune" {>= "2.8"}
   "odoc" {with-doc}
 ]
+conflicts: ["base-domain"]
 build: [
   ["dune" "subst"] {dev}
   [

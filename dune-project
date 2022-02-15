@@ -11,5 +11,8 @@
 (package
  (name mem_usage)
  (synopsis "Cross-platform stats about memory usage")
- (depends dune)
+ (depends
+   (ocaml (>= 4.08))
+   dune)
+ (conflicts base-domains)
 )
