@@ -10,7 +10,7 @@ ocaml-mem_usage is a simple cross-platform OCaml module to return information on
 Documentation:
 =============
 
-The [API documentation is available here]()
+The [API documentation is available here](https://www.liquidsoap.info/ocaml-mem_usage/mem_usage/index.html)
 
 Prerequisites:
 ==============
