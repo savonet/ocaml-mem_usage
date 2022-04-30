@@ -168,17 +168,17 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   if (file) {
     while (fscanf(file, " %1023s", buffer) == 1) {
       if (strcmp(buffer, "VmSize:") == 0) {
-        if (fscanf(file, " %d", &process_virtual_memory) != 1)
+        if (fscanf(file, " %lld", &process_virtual_memory) != 1)
           process_virtual_memory = 0;
         process_virtual_memory *= 1024;
-        break;
+        continue;
       }
 
       if (strcmp(buffer, "VmRSS:") == 0) {
-        if (fscanf(file, " %d", &process_physical_memory) != 1)
+        if (fscanf(file, " %lld", &process_physical_memory) != 1)
           process_physical_memory = 0;
         process_physical_memory *= 1024;
-        break;
+        continue;
       }
     }
     fclose(file);
