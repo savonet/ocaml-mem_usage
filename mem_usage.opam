@@ -12,7 +12,6 @@ depends: [
   "dune" {>= "2.8"}
   "odoc" {with-doc}
 ]
-conflicts: ["base-domains"]
 build: [
   ["dune" "subst"] {dev}
   [
