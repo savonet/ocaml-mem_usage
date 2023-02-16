@@ -37,12 +37,12 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   caml_acquire_runtime_system();
 
   ret = caml_alloc_tuple(6);
-  Store_field(ret, 0, Val_int(total_virtual_memory));
-  Store_field(ret, 1, Val_int(total_physical_memory));
-  Store_field(ret, 2, Val_int(total_used_virtual_memory));
-  Store_field(ret, 3, Val_int(total_used_physical_memory));
-  Store_field(ret, 4, Val_int(process_virtual_memory));
-  Store_field(ret, 5, Val_int(process_physical_memory));
+  Store_field(ret, 0, Val_long(total_virtual_memory));
+  Store_field(ret, 1, Val_long(total_physical_memory));
+  Store_field(ret, 2, Val_long(total_used_virtual_memory));
+  Store_field(ret, 3, Val_long(total_used_physical_memory));
+  Store_field(ret, 4, Val_long(process_virtual_memory));
+  Store_field(ret, 5, Val_long(process_physical_memory));
   CAMLreturn(ret);
 }
 #elif defined(__APPLE__)
@@ -123,12 +123,12 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   caml_acquire_runtime_system();
 
   ret = caml_alloc_tuple(6);
-  Store_field(ret, 0, Val_int(total_virtual_memory));
-  Store_field(ret, 1, Val_int(total_physical_memory));
-  Store_field(ret, 2, Val_int(total_used_virtual_memory));
-  Store_field(ret, 3, Val_int(total_used_physical_memory));
-  Store_field(ret, 4, Val_int(process_virtual_memory));
-  Store_field(ret, 5, Val_int(process_physical_memory));
+  Store_field(ret, 0, Val_long(total_virtual_memory));
+  Store_field(ret, 1, Val_long(total_physical_memory));
+  Store_field(ret, 2, Val_long(total_used_virtual_memory));
+  Store_field(ret, 3, Val_long(total_used_physical_memory));
+  Store_field(ret, 4, Val_long(process_virtual_memory));
+  Store_field(ret, 5, Val_long(process_physical_memory));
   CAMLreturn(ret);
 }
 #else
@@ -142,9 +142,9 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   CAMLparam0();
   CAMLlocal1(ret);
   struct sysinfo memInfo;
-  unsigned long total_virtual_memory, total_physical_memory,
+  uint64_t total_virtual_memory, total_physical_memory,
       total_used_virtual_memory, total_used_physical_memory;
-  long long process_virtual_memory, process_physical_memory;
+  unsigned long long process_virtual_memory, process_physical_memory;
   FILE *file;
   char buffer[1024] = "";
 
@@ -186,12 +186,12 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   caml_acquire_runtime_system();
 
   ret = caml_alloc_tuple(6);
-  Store_field(ret, 0, Val_int(total_virtual_memory));
-  Store_field(ret, 1, Val_int(total_physical_memory));
-  Store_field(ret, 2, Val_int(total_used_virtual_memory));
-  Store_field(ret, 3, Val_int(total_used_physical_memory));
-  Store_field(ret, 4, Val_int(process_virtual_memory));
-  Store_field(ret, 5, Val_int(process_physical_memory));
+  Store_field(ret, 0, Val_long(total_virtual_memory));
+  Store_field(ret, 1, Val_long(total_physical_memory));
+  Store_field(ret, 2, Val_long(total_used_virtual_memory));
+  Store_field(ret, 3, Val_long(total_used_physical_memory));
+  Store_field(ret, 4, Val_long(process_virtual_memory));
+  Store_field(ret, 5, Val_long(process_physical_memory));
   CAMLreturn(ret);
 }
 #endif
