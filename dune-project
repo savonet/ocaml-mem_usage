@@ -14,5 +14,4 @@
  (depends
    (ocaml (>= 4.08))
    dune)
- (conflicts base-domains)
 )
