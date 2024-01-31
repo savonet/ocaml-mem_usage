@@ -11,6 +11,8 @@ type t = {
   total_used_physical_memory : int;
   process_virtual_memory : int;
   process_physical_memory : int;
+  process_private_memory : int;
+  process_swapped_memory : int;
 }
 
 val info : unit -> t

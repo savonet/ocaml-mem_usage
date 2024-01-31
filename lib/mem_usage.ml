@@ -11,6 +11,8 @@ type t = {
   total_used_physical_memory : int;
   process_virtual_memory : int;
   process_physical_memory : int;
+  process_private_memory : int;
+  process_swapped_memory : int;
 }
 
 external info : unit -> t = "ocaml_mem_usage_mem_usage"
@@ -43,7 +45,7 @@ let prettify_bytes ?(float_printer = Printf.sprintf "%.02f") ?(signed = false)
     let exponent =
       Float.floor
         (if binary then log (float bytes) /. log 1024.
-        else log10 (float bytes) /. 3.)
+         else log10 (float bytes) /. 3.)
     in
     let unit_index =
       if List.length units - 1 < int_of_float exponent then
