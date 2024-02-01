@@ -2,7 +2,7 @@ ocaml-mem_usage
 ============
 
 ![GitHub](https://img.shields.io/github/license/savonet/ocaml-mem_usage)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/savonet/ocaml-mem_usage/CI)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/savonet/ocaml-mem_usage/.github/workflows/main.yml?branch=main)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/savonet/ocaml-mem_usage)
 
 ocaml-mem_usage is a simple cross-platform OCaml module to return information on memory usage.
