@@ -1,3 +1,9 @@
+(*
+ * SPDX-FileCopyrightText: 2022 - 2024 Savonet team
+ *
+ * SPDX-License-Identifier: MIT
+ *)
+
 let () =
   let {
     Mem_usage.total_virtual_memory;
