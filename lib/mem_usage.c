@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 - 2024 Savonet team
+//
+// SPDX-License-Identifier: MIT
+
 #include <caml/alloc.h>
 #include <caml/fail.h>
 #include <caml/memory.h>
