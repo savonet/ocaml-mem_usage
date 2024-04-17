@@ -251,7 +251,7 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
     fclose(file);
   }
 
-  process_virtual_memory = 0;
+  process_private_memory = 0;
   process_swapped_memory = 0;
   file = fopen("/proc/self/smaps", "r");
   if (file) {
@@ -259,7 +259,7 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
       if (strcmp(buffer, "Private_Dirty:") == 0) {
         if (fscanf(file, " %lld", &tmp) != 1)
           tmp = 0;
-        process_virtual_memory += tmp * 1024;
+        process_private_memory += tmp * 1024;
         continue;
       }
 
