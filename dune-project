@@ -2,7 +2,7 @@
 (version 0.1.1)
 (name mem_usage)
 (source (github savonet/ocaml-mem_usage))
-(license GPL-2.0)
+(license MIT)
 (authors "Romain Beauxis <toots@rastageeks.org>")
 (maintainers "The Savonet Team <savonet-users@lists.sourceforge.net>")
 
