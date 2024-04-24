@@ -27,3 +27,4 @@ build: [
   ]
 ]
 dev-repo: "git+https://github.com/savonet/ocaml-mem_usage.git"
+available: [ os != "freebsd" ]
