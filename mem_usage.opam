@@ -7,12 +7,6 @@ authors: ["Romain Beauxis <toots@rastageeks.org>"]
 license: "MIT"
 homepage: "https://github.com/savonet/ocaml-mem_usage"
 bug-reports: "https://github.com/savonet/ocaml-mem_usage/issues"
-depends: [
-  "conf-sysinfo"
-  "ocaml" {>= "4.08"}
-  "dune" {>= "2.8"}
-  "odoc" {with-doc}
-]
 build: [
   ["dune" "subst"] {dev}
   [
@@ -28,3 +22,9 @@ build: [
   ]
 ]
 dev-repo: "git+https://github.com/savonet/ocaml-mem_usage.git"
+depends: [
+  "conf-sysinfo" {os = "freebsd"}
+  "ocaml" {>= "4.08"}
+  "dune" {>= "2.8"}
+  "odoc" {with-doc}
+]

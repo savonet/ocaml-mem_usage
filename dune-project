@@ -12,7 +12,6 @@
  (name mem_usage)
  (synopsis "Cross-platform stats about memory usage")
  (depends
-   conf-sysinfo
    (ocaml (>= 4.08))
    dune)
 )
