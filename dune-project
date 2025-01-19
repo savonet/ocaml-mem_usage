@@ -1,5 +1,5 @@
 (lang dune 2.8)
-(version 0.1.1)
+(version 0.1.2)
 (name mem_usage)
 (source (github savonet/ocaml-mem_usage))
 (license MIT)
@@ -12,6 +12,7 @@
  (name mem_usage)
  (synopsis "Cross-platform stats about memory usage")
  (depends
+   conf-sysinfo
    (ocaml (>= 4.08))
    dune)
 )
