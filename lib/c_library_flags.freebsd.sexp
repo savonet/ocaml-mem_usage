@@ -1,1 +1,1 @@
-("-lsysinfo")
+("-L/usr/local/lib -lsysinfo")
