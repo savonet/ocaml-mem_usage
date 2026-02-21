@@ -155,22 +155,30 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
     process_virtual_memory = t_info.virtual_size;
   }
 
+  // hw.memsize is uint64_t, hw.physmem is 32-bit and overflows >2GB
+  {
+    uint64_t memsize;
+    size_t memsize_len = sizeof(memsize);
+    if (sysctlbyname("hw.memsize", &memsize, &memsize_len, NULL, 0) != 0) {
+      fprintf(stderr, "Unable to get total physical memory.\n");
+      total_physical_memory = 0;
+    } else {
+      total_physical_memory = memsize;
+    }
+  }
+
   mach_port = mach_host_self();
   count = sizeof(vm_stats) / sizeof(natural_t);
 
   if (host_page_size(mach_port, &page_size) != KERN_SUCCESS) {
     fprintf(stderr, "Unable to get host page size.\n");
-    total_physical_memory = 0;
     total_used_physical_memory = 0;
   } else {
     if (host_statistics64(mach_port, HOST_VM_INFO, (host_info64_t)&vm_stats,
                           &count) != KERN_SUCCESS) {
       fprintf(stderr, "Unable to get host stats.\n");
-      total_physical_memory = 0;
       total_used_physical_memory = 0;
     } else {
-      total_physical_memory = vm_stats.free_count * (int64_t)page_size;
-
       total_used_physical_memory =
           ((int64_t)vm_stats.active_count + (int64_t)vm_stats.inactive_count +
            (int64_t)vm_stats.wire_count) *
