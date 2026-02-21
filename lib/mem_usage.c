@@ -199,7 +199,6 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   caml_acquire_runtime_system();
 
   ret = caml_alloc_tuple(8);
-  ;
   Store_field(ret, 0, Val_long(total_virtual_memory));
   Store_field(ret, 1, Val_long(total_physical_memory));
   Store_field(ret, 2, Val_long(total_used_virtual_memory));
