@@ -92,18 +92,20 @@ void private_pages(unsigned int *pages_resident,
                    unsigned int *pages_swapped_out) {
   mach_vm_address_t address = 0;
   mach_vm_size_t size = 0;
-  uint32_t depth = 2048;
+  uint32_t depth;
   vm_region_submap_info_data_64_t info;
-  mach_msg_type_number_t count = VM_REGION_SUBMAP_INFO_COUNT_64;
+  mach_msg_type_number_t count;
   kern_return_t kr;
   *pages_resident = 0;
   *pages_swapped_out = 0;
 
   while (1) {
+    depth = 2048;
+    count = VM_REGION_SUBMAP_INFO_COUNT_64;
     kr = mach_vm_region_recurse(mach_task_self(), &address, &size, &depth,
                                 (vm_region_recurse_info_t)&info, &count);
 
-    if (kr != KERN_SUCCESS || size == 0)
+    if (kr != KERN_SUCCESS)
       break;
 
     if (info.share_mode == SM_PRIVATE) {
