@@ -218,8 +218,8 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   struct sysinfo memInfo;
   uint64_t total_virtual_memory, total_physical_memory,
       total_used_virtual_memory, total_used_physical_memory;
-  unsigned long long process_virtual_memory, process_physical_memory,
-      process_private_memory, process_swapped_memory, tmp;
+  unsigned long long process_virtual_memory = 0, process_physical_memory = 0,
+      process_private_memory = 0, process_swapped_memory = 0, tmp;
   FILE *file;
   char buffer[1024] = "";
 
