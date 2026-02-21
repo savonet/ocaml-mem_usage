@@ -28,11 +28,11 @@ Process physical memory: %s
 Process private memory:  %s
 Process swapped memory:  %s
 |}
-    (Mem_usage.prettify_bytes total_virtual_memory)
-    (Mem_usage.prettify_bytes total_physical_memory)
-    (Mem_usage.prettify_bytes total_used_virtual_memory)
-    (Mem_usage.prettify_bytes total_used_physical_memory)
-    (Mem_usage.prettify_bytes process_virtual_memory)
-    (Mem_usage.prettify_bytes process_physical_memory)
-    (Mem_usage.prettify_bytes process_private_memory)
-    (Mem_usage.prettify_bytes process_swapped_memory)
+    (Mem_usage.prettify_bytes ~binary:true total_virtual_memory)
+    (Mem_usage.prettify_bytes ~binary:true total_physical_memory)
+    (Mem_usage.prettify_bytes ~binary:true total_used_virtual_memory)
+    (Mem_usage.prettify_bytes ~binary:true total_used_physical_memory)
+    (Mem_usage.prettify_bytes ~binary:true process_virtual_memory)
+    (Mem_usage.prettify_bytes ~binary:true process_physical_memory)
+    (Mem_usage.prettify_bytes ~binary:true process_private_memory)
+    (Mem_usage.prettify_bytes ~binary:true process_swapped_memory)
