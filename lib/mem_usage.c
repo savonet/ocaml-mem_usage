@@ -13,6 +13,8 @@
 #include <tchar.h>
 #include <windows.h>
 
+// PROCESS_MEMORY_COUNTERS_EX2 requires Windows 10 1607+ / SDK 10.0.14393.0+
+#if !defined(PROCESS_MEMORY_COUNTERS_EX2)
 typedef struct _PROCESS_MEMORY_COUNTERS_EX2 {
   DWORD   cb;
   DWORD   PageFaultCount;
@@ -28,6 +30,7 @@ typedef struct _PROCESS_MEMORY_COUNTERS_EX2 {
   SIZE_T  PrivateWorkingSetSize;
   ULONG64 SharedCommitUsage;
 } PROCESS_MEMORY_COUNTERS_EX2;
+#endif
 
 CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   CAMLparam0();
@@ -38,10 +41,10 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   DWORDLONG total_used_virtual_memory;
   DWORDLONG total_physical_memory;
   DWORDLONG total_used_physical_memory;
-  SIZE_T process_virtual_memory;
-  SIZE_T process_physical_memory;
-  SIZE_T process_private_memory;
-  SIZE_T process_swapped_memory;
+  SIZE_T process_virtual_memory = 0;
+  SIZE_T process_physical_memory = 0;
+  SIZE_T process_private_memory = 0;
+  SIZE_T process_swapped_memory = 0;
 
   caml_release_runtime_system();
   mem_info.dwLength = sizeof(MEMORYSTATUSEX);
@@ -52,12 +55,14 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
   total_physical_memory = mem_info.ullTotalPhys;
   total_used_physical_memory = mem_info.ullTotalPhys - mem_info.ullAvailPhys;
 
-  GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS *)&pmc,
-                       sizeof(pmc));
-  process_virtual_memory = pmc.PrivateUsage;
-  process_physical_memory = pmc.WorkingSetSize;
-  process_private_memory = pmc.PrivateWorkingSetSize;
-  process_swapped_memory = pmc.PagefileUsage;
+  pmc.cb = sizeof(pmc);
+  if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS *)&pmc,
+                           sizeof(pmc))) {
+    process_virtual_memory = pmc.PrivateUsage;
+    process_physical_memory = pmc.WorkingSetSize;
+    process_private_memory = pmc.PrivateWorkingSetSize;
+    process_swapped_memory = pmc.PagefileUsage;
+  }
   caml_acquire_runtime_system();
 
   ret = caml_alloc_tuple(8);
