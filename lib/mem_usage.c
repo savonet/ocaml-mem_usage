@@ -259,22 +259,23 @@ CAMLprim value ocaml_mem_usage_mem_usage(value unit) {
     fclose(file);
   }
 
-  process_private_memory = 0;
-  process_swapped_memory = 0;
-  file = fopen("/proc/self/smaps", "r");
+  // smaps_rollup (Linux 4.14+) provides aggregated stats in one entry
+  // Falls back to smaps for older kernels
+  file = fopen("/proc/self/smaps_rollup", "r");
+  if (!file)
+    file = fopen("/proc/self/smaps", "r");
   if (file) {
     while (fscanf(file, " %1023s", buffer) == 1) {
-      if (strcmp(buffer, "Private_Dirty:") == 0) {
-        if (fscanf(file, " %lld", &tmp) != 1)
-          tmp = 0;
-        process_private_memory += tmp * 1024;
+      if (strcmp(buffer, "Private_Dirty:") == 0 ||
+          strcmp(buffer, "Private_Clean:") == 0) {
+        if (fscanf(file, " %lld", &tmp) == 1)
+          process_private_memory += tmp * 1024;
         continue;
       }
 
       if (strcmp(buffer, "Swap:") == 0) {
-        if (fscanf(file, " %lld", &tmp) != 1)
-          tmp = 0;
-        process_swapped_memory += tmp * 1024;
+        if (fscanf(file, " %lld", &tmp) == 1)
+          process_swapped_memory += tmp * 1024;
         continue;
       }
     }
