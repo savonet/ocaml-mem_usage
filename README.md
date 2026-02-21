@@ -28,12 +28,10 @@ The key metric is `process_private_memory` which represents memory that would be
 Supported Platforms
 ===================
 
-| Platform | APIs Used |
-|----------|-----------|
-| **Linux** | `sysinfo()`, `/proc/self/status`, `/proc/self/smaps_rollup` (4.14+) or `/proc/self/smaps` |
-| **macOS** | `sysctl(hw.memsize)`, `host_statistics64()`, `mach_vm_region_recurse()` |
-| **Windows** | `GlobalMemoryStatusEx()`, `GetProcessMemoryInfo()` with `PROCESS_MEMORY_COUNTERS_EX2` |
-| **FreeBSD** | `sysinfo()` via libsysinfo |
+- Linux
+- macOS
+- Windows
+- FreeBSD
 
 Example
 =======
@@ -50,46 +48,27 @@ Output:
 Process private memory: 1.25 MiB
 ```
 
-Documentation:
-=============
-
-The [API documentation is available here](https://www.liquidsoap.info/ocaml-mem_usage/mem_usage/index.html)
-
-Prerequisites:
-==============
-
-- ocaml
-- dune
-- findlib
-
-See [dune-project](dune-project) file for versions.
-
-Installation:
-=============
-
-The preferred installation method is via [opam](http://opam.ocaml.org/):
+Installation
+============
 
 ```
 opam install mem_usage
 ```
 
-This will install the latest release of `mem_usage`. If you wish to install the latest code from this repository, you can do:
+To install from source:
 
 ```
+git clone https://github.com/savonet/ocaml-mem_usage.git
+cd ocaml-mem_usage
 opam install .
 ```
 
-From within this repository.
+Documentation
+=============
 
-Compilation:
-============
+[API documentation](https://www.liquidsoap.info/ocaml-mem_usage/mem_usage/index.html)
 
-```
-dune build
-```
-
-Author:
+License
 =======
 
-This author of this software may be contacted by electronic mail
-at the following address: savonet-users@lists.sourceforge.net.
+MIT
