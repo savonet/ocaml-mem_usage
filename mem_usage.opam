@@ -22,9 +22,10 @@ build: [
   ]
 ]
 dev-repo: "git+https://github.com/savonet/ocaml-mem_usage.git"
+x-maintenance-intent: ["(latest)"]
 depends: [
   "conf-sysinfo" {os = "freebsd"}
   "ocaml" {>= "4.08"}
-  "dune" {>= "2.8"}
+  "dune" {>= "3.23"}
   "odoc" {with-doc}
 ]

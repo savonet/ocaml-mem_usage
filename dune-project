@@ -1,4 +1,4 @@
-(lang dune 2.8)
+(lang dune 3.23)
 (version 0.1.3)
 (name mem_usage)
 (source (github savonet/ocaml-mem_usage))
@@ -10,8 +10,8 @@
 
 (package
  (name mem_usage)
+ (allow_empty)
  (synopsis "Cross-platform stats about memory usage")
  (depends
-   (ocaml (>= 4.08))
-   dune)
+   (ocaml (>= 4.08)))
 )
